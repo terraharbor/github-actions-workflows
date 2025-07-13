@@ -1,0 +1,46 @@
+---
+# GitHub Actions workflow to automatically push PRs and issues to the TerraHarbor project board.
+#
+# IMPORTANT: This workflow is called by other workflows in the organization's repositories and it is centralized here 
+# in order to be easily maintained. Because of this, please make sure you're not introducing any breaking changes when
+# modifying this workflow.
+  
+name: "pr-issues-project"
+
+on:
+  # Run when called by other workflows.
+  workflow_call:
+    secrets:
+      TERRAHARBOR_MAINTAINER_APP_ID:
+        description: "App ID of the GitHub app with permissions to add issues and PRs to the TerraHarbor project board"
+        required: true
+      TERRAHARBOR_MAINTAINER_PRIVATE_KEY:
+        description: "PEM private key of the GitHub app with permissions to add issues and PRs to the TerraHarbor project board"
+        required: true
+
+  # Run when a new issue or PR is opened or reopened in this repository.
+  issues:
+    types: 
+    - opened
+    - reopened
+  pull_request:
+    types:
+    - opened
+    - reopened
+
+jobs:
+  pr-issues-project:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate authentication token from GitHub App
+      id: app_token
+      uses: actions/create-github-app-token@v2.0.2
+      with:
+        app-id: ${{ secrets.TERRAHARBOR_MAINTAINER_APP_ID }}
+        private-key: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
+
+    - name: Add PR or issue to the project board
+      uses: actions/add-to-project@v1.0.2
+      with:
+        project-url: https://github.com/orgs/terraharbor/projects/1/
+        github-token: ${{ steps.app_token.outputs.token }}

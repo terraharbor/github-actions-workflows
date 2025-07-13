@@ -1,0 +1,44 @@
+---
+# GitHub Actions workflow to automatically release each repository of the TerraHarbor organization.
+#
+# IMPORTANT: This workflow is called by other workflows in the organization's repositories and it is centralized here 
+# in order to be easily maintained. Because of this, please make sure you're not introducing any breaking changes when
+# modifying this workflow.
+  
+name: "release-please"
+
+on:
+  # Run when called by other workflows.
+  workflow_call:
+    secrets:
+      TERRAHARBOR_RELEASER_APP_ID:
+        description: "App ID of the GitHub app with permissions to create PRs and modify files on the TerraHarbor repositories"
+        required: true
+      TERRAHARBOR_RELEASER_PRIVATE_KEY:
+        description: "PEM private key of the GitHub app with permissions to create PRs and modify files on the TerraHarbor repositories"
+        required: true
+
+  # Run when a new issue or PR is opened or reopened in this repository.
+  # push:
+  #   branches:
+  #     - main
+
+  # Run the workflow manually
+  workflow_dispatch:
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate authentication token from GitHub App
+      id: app_token
+      uses: actions/create-github-app-token@v2.0.2
+      with:
+        app-id: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
+        private-key: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
+
+    - name: Run Release Please
+      uses: googleapis/release-please-action@v4.2.0
+      id: release-please
+      with:
+        token: ${{ steps.app_token.outputs.token }}
