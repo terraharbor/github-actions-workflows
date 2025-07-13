@@ -75,7 +75,7 @@ jobs:
 
     - name: Generate authentication token from GitHub App
       id: app_token
-      uses: actions/create-github-app-token@v2.0.2
+      uses: actions/create-github-app-token@v2.0.6
       with:
         app-id: ${{ secrets.TERRAHARBOR_RENOVATOR_APP_ID }}
         private-key: ${{ secrets.TERRAHARBOR_RENOVATOR_PRIVATE_KEY }}
