@@ -40,7 +40,7 @@ jobs:
         private-key: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
 
     - name: Add PR or issue to the project board
-      uses: actions/add-to-project@v1.1.5
+      uses: actions/add-to-project@v1.0.2
       with:
         project-url: https://github.com/orgs/terraharbor/projects/1/
         github-token: ${{ steps.app_token.outputs.token }}
