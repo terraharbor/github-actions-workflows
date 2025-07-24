@@ -73,6 +73,12 @@ jobs:
         labels: ${{ steps.metadata_extraction.outputs.labels }}
         push: ${{ inputs.push_image }}
 
+
+  notify_ansible:
+    runs-on: ubuntu-latest
+    if: inputs.push_image
+
+    steps:
     - name: Generate authentication token from GitHub App
       if: inputs.push_image
       id: app_token
