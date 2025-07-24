@@ -26,6 +26,12 @@ on:
       GITHUB_TOKEN_CALLER:
         description: "GitHub token with permissions to push the Docker image to the registry"
         required: true
+      TERRAHARBOR_MAINTAINER_APP_ID:
+        description: "App ID of the GitHub app with permissions to add issues and PRs to the TerraHarbor project board"
+        required: true
+      TERRAHARBOR_MAINTAINER_PRIVATE_KEY:
+        description: "PEM private key of the GitHub app with permissions to add issues and PRs to the TerraHarbor project board"
+        required: true
 
 jobs:
   docker-build:
@@ -66,3 +72,17 @@ jobs:
         tags: ${{ steps.metadata_extraction.outputs.tags }}
         labels: ${{ steps.metadata_extraction.outputs.labels }}
         push: ${{ inputs.push_image }}
+
+    - name: Generate authentication token from GitHub App
+      id: app_token
+      uses: actions/create-github-app-token@v2.0.6
+      with:
+        app-id: ${{ secrets.TERRAHARBOR_MAINTAINER_APP_ID }}
+        private-key: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
+
+    - name: Dispatch Ansible workflow
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        event-type: ansible-docker-apply
+        repository: terraharbor/infrastructure
+        token: ${{ steps.app_token.outputs.token }}
