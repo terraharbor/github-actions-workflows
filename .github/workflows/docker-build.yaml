@@ -10,6 +10,10 @@ name: "docker-build"
 on:
   workflow_call:
     inputs:
+      push_image:
+        description: "Whether to push the Docker image to the registry"
+        type: boolean
+        required: true
       build_context:
         description: "The build context for the Docker image"
         type: string
@@ -38,23 +42,24 @@ jobs:
     - name: "Checkout the repository"
       uses: actions/checkout@v4
 
-    - name: Generate authentication token from GitHub App
-      id: app-token
-      uses: actions/create-github-app-token@v2.0.6
-      with:
-        app-id: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
-        private-key: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
-
     - name: "Extract metadata for the Docker image"
-      if: github.event_name == 'push' && github.ref_type == 'tag' # Only extract metadata if we push a tag
+      if: inputs.push_image
       id: metadata_extraction
       uses: docker/metadata-action@v5.7.0
       with:
         images: ghcr.io/${{ github.repository }}
 
+    - name: Generate authentication token from GitHub App  
+      if: inputs.push_image
+      id: app-token
+      uses: actions/create-github-app-token@v2.0.6
+      with:
+        app-id: ${{ secrets.TERRAHARBOR_RELEASER_APP_ID }}
+        private-key: ${{ secrets.TERRAHARBOR_RELEASER_PRIVATE_KEY }}
+    
     - name: "Login to GitHub Container Registry"
-      if: github.event_name == 'push' && github.ref_type == 'tag' # Only login if we push a tag
-      uses: docker/login-action@v3
+      if: inputs.push_image
+      uses: docker/login-action@v3.4.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -71,4 +76,4 @@ jobs:
         platforms: ${{ matrix.platform }}
         tags: ${{ steps.metadata_extraction.outputs.tags }}
         labels: ${{ steps.metadata_extraction.outputs.labels }}
-        push: ${{ github.event_name == 'push' && github.ref_type == 'tag' }} # Only push built image if we push a tag
+        push: ${{ inputs.push_image }}
