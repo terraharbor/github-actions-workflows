@@ -23,13 +23,7 @@ on:
         type: string
         default: "Dockerfile"
     secrets:
-      TERRAHARBOR_RELEASER_APP_ID:
-        description: "App ID of the GitHub app with permissions to create PRs and modify files on the TerraHarbor repositories"
-        required: true
-      TERRAHARBOR_RELEASER_PRIVATE_KEY:
-        description: "PEM private key of the GitHub app with permissions to create PRs and modify files on the TerraHarbor repositories"
-        required: true
-      GITHUB_TOKEN:
+      GITHUB_TOKEN_CALLER:
         description: "GitHub token with permissions to push the Docker image to the registry"
         required: true
 
@@ -58,7 +52,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ secrets.GITHUB_TOKEN_CALLER }}
 
     - name: "Set up Docker Buildx"
       uses: docker/setup-buildx-action@v3.4.0
