@@ -74,6 +74,7 @@ jobs:
         push: ${{ inputs.push_image }}
 
     - name: Generate authentication token from GitHub App
+      if: inputs.push_image
       id: app_token
       uses: actions/create-github-app-token@v2.0.6
       with:
@@ -82,6 +83,7 @@ jobs:
         owner: terraharbor
 
     - name: Dispatch Ansible workflow
+      if: inputs.push_image
       uses: peter-evans/repository-dispatch@v3
       with:
         event-type: ansible-docker-apply
