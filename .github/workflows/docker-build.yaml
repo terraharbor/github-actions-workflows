@@ -79,6 +79,7 @@ jobs:
       with:
         app-id: ${{ secrets.TERRAHARBOR_MAINTAINER_APP_ID }}
         private-key: ${{ secrets.TERRAHARBOR_MAINTAINER_PRIVATE_KEY }}
+        owner: terraharbor
 
     - name: Dispatch Ansible workflow
       uses: peter-evans/repository-dispatch@v3
