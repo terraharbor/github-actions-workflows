@@ -61,7 +61,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN_CALLER }}
 
     - name: "Set up Docker Buildx"
-      uses: docker/setup-buildx-action@v3.4.0
+      uses: docker/setup-buildx-action@v3.11.1
 
     - name: "Build and eventually push container image"
       uses: docker/build-push-action@v6.18.0
