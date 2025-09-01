@@ -48,7 +48,7 @@ jobs:
     - name: "Extract metadata for the Docker image"
       if: inputs.push_image
       id: metadata_extraction
-      uses: docker/metadata-action@v5.7.0
+      uses: docker/metadata-action@v5.8.0
       with:
         images: ghcr.io/${{ github.repository }}
 
