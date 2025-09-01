@@ -48,8 +48,6 @@ jobs:
     - name: "Extract metadata for the Docker image"
       if: inputs.push_image
       id: metadata_extraction
-      env:
-        DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
       uses: docker/metadata-action@v5.7.0
       with:
         images: ghcr.io/${{ github.repository }}
@@ -73,9 +71,8 @@ jobs:
         platforms: ${{ matrix.platform }}
         tags: ${{ steps.metadata_extraction.outputs.tags }}
         labels: ${{ steps.metadata_extraction.outputs.labels }}
-        provenance: false
-        sbom: false
         push: ${{ inputs.push_image }}
+
 
   notify_ansible:
     runs-on: ubuntu-latest
