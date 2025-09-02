@@ -54,7 +54,7 @@ jobs:
 
     - name: "Login to GitHub Container Registry"
       if: inputs.push_image
-      uses: docker/login-action@v3.4.0
+      uses: docker/login-action@v3.5.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
