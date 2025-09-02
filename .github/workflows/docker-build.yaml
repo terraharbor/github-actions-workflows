@@ -43,7 +43,7 @@ jobs:
 
     steps:
     - name: "Checkout the repository"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: "Extract metadata for the Docker image"
       if: inputs.push_image
