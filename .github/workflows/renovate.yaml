@@ -6,8 +6,8 @@ name: "renovate"
 
 on:
   schedule:
-  # Run every hour.
-  - cron: '0 * * * *'
+  # Run every sunday at 3 AM.
+  - cron: '0 3 * * 0'
 
   # Dispatch a Renovate job with different cache options if you want to reset or disable the cache manually.
   workflow_dispatch:
