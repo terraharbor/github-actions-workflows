@@ -91,7 +91,7 @@ jobs:
 
     - name: Dispatch Ansible workflow
       if: inputs.push_image
-      uses: peter-evans/repository-dispatch@v3
+      uses: peter-evans/repository-dispatch@v4
       with:
         event-type: ansible-docker-apply
         repository: terraharbor/infrastructure
